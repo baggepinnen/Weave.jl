@@ -114,13 +114,11 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
     out = read(`$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`, String)
     out = read(`$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`, String)
     rm(xname)
-    rm(textmp, recursive=true)
     cd(old_wd)
     return true
   catch e
     @warn("Error converting document to pdf. Try running latex manually")
     cd(old_wd)
-    rm(textmp)
     return false
   end
 end
