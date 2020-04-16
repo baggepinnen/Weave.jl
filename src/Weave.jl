@@ -131,7 +131,6 @@ function weave(
     #theme != nothing && (doc.theme = theme) #Reserved for themes
     css != nothing && (doc.css = css)
 
-
     doc = run(doc, doctype = doctype,
                 mod = mod,
                 out_path=out_path, args = args,
