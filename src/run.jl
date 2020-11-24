@@ -219,8 +219,8 @@ function capture_output(code, mod, path, error, report)
             !isnothing(obj) && !REPL.ends_with_semicolon(code) && display(obj)
         catch _err
             err = unwrap_load_err(_err)
-            error || throw(err)
             display(err)
+            error || throw(err)
             @warn "ERROR: $(typeof(err)) occurred, including output in Weaved document"
         finally
             redirect_stdout(old)

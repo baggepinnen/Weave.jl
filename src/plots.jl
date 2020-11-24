@@ -21,11 +21,12 @@ function Base.display(
     # Remove extra spaces from start of line for pandoc
     s = repr(MIME("text/html"), data)
     splitted = split(s, "\n")
-    start = split(splitted[1], r"(?=<div)")
+    # start = split(splitted[1], r"(?=<div)")
     # script = lstrip(start[1]) # local
-
-    div = lstrip(start[2])
-    plot = join(map(lstrip, splitted[2:end]), "\n")
+    # div = length(start) >= 2 ? lstrip(start[2]) : lstrip(start[1])
+    error()
+    div = ""
+    plot = join(map(lstrip, splitted[1:end]), "\n")
 
     if report.first_plot
         report.header_script *= "<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>"

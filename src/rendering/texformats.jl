@@ -85,7 +85,11 @@ function render_figures(docformat::LaTeXFormat, chunk)
     (isnothing(f_pos)) && (f_pos = "!h")
     # Set size
     attribs = ""
-    isnothing(width) || (attribs = "width=$(md_length_to_latex(width,"\\linewidth"))")
+    if isnothing(width)
+        attribs = "width=\\linewidth"
+    else
+        attribs = "width=$(md_length_to_latex(width,"\\linewidth"))"
+    end
     (!isempty(attribs) && !isnothing(height)) && (attribs *= ",")
     isnothing(height) || (attribs *= "height=$(md_length_to_latex(height,"\\paperheight"))")
 
@@ -188,12 +192,9 @@ end
 
 function render_output(docformat::WeaveLaTeXFormat, output)
     # Highligts has some extra escaping defined, eg of $, ", ...
-    output_escaped = sprint(
-        (io, x) ->
-            Highlights.Format.escape(io, MIME("text/latex"), x, charescape = true),
-        output,
-    )
-    return unicode2latex(docformat, output_escaped, true)
+    @show output
+    ret = highlight_code(MIME("text/latex"), output, docformat.highlight_theme)
+    unicode2latex(docformat, ret, false)
 end
 
 function render_code(docformat::WeaveLaTeXFormat, code)
@@ -223,8 +224,8 @@ end
 Base.@kwdef mutable struct WeaveLaTeX <: WeaveLaTeXFormat
     description = "Weave-styled LaTeX"
     extension = "tex"
-    codestart = ""
-    codeend = ""
+    codestart = "\\begin{lstlisting}"
+    codeend = "\\end{lstlisting}\n"
     termstart = codestart
     termend = codeend
     outputstart = "\\begin{lstlisting}"
@@ -247,7 +248,7 @@ end
 register_format!("md2tex", WeaveLaTeX())
 
 # will be used by `write_doc`
-const DEFAULT_LATEX_CMD = ["xelatex", "-shell-escape", "-halt-on-error"]
+const DEFAULT_LATEX_CMD = ["lualatex", "-shell-escape", "-halt-on-error"]
 
 
 Base.@kwdef mutable struct LaTeX2PDF <: ExportFormat
